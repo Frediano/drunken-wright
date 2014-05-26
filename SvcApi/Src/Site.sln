@@ -8,20 +8,20 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Site", "http://localhost:60
 		UseIISExpress = "true"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_60458"
-		Debug.AspNetCompiler.PhysicalPath = "..\..\..\..\..\..\drunken-wright.git\trunk\SvcApi\Site\"
+		Debug.AspNetCompiler.PhysicalPath = "..\Site\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_60458\"
 		Debug.AspNetCompiler.Updateable = "true"
 		Debug.AspNetCompiler.ForceOverwrite = "true"
 		Debug.AspNetCompiler.FixedNames = "false"
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.VirtualPath = "/localhost_60458"
-		Release.AspNetCompiler.PhysicalPath = "..\..\..\..\..\..\drunken-wright.git\trunk\SvcApi\Site\"
+		Release.AspNetCompiler.PhysicalPath = "..\Site\"
 		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_60458\"
 		Release.AspNetCompiler.Updateable = "true"
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		SlnRelativePath = "..\..\..\..\..\..\drunken-wright.git\trunk\SvcApi\Site\"
+		SlnRelativePath = "..\Site\"
 	EndProjectSection
 EndProject
 Global
