@@ -1,0 +1,156 @@
+﻿@media only screen and (max-width : 480px) {
+    #mygrid {
+        display: -ms-grid;
+        margin: 3px;
+        -ms-grid-columns: 100%; /*one column taking full width */
+        -ms-grid-rows: 100px auto auto auto auto; /*5 rows */
+    }
+    #myheader {
+            -ms-grid-row: 1;
+            -ms-grid-column: 1;
+             background-color: #ff0000
+    }
+    #myheader h1 {
+        font-size:1.2em;
+    }    
+    #block1 {
+            -ms-grid-row: 2; /*place into row 2 / column 1*/
+            -ms-grid-column: 1;
+    }
+    #block2 {
+            -ms-grid-row: 3;
+            -ms-grid-column: 1;
+    }
+    #block2Items {
+            -ms-grid-row: 4;
+            -ms-grid-column: 1;
+    }
+    #block3 {
+            -ms-grid-row: 5;
+            -ms-grid-column: 1;
+    }
+}
+
+@media only screen and (min-width : 481px) {
+/*make two columns and move block 3 next to 1 — just because we can*/
+    #mygrid {
+        display: -ms-grid;
+        -ms-grid-columns: 10px 3fr 10px 1fr 10px; /*10px columns to spacing in between*/
+        -ms-grid-rows: 100px auto auto auto; /*100px row and three auto rows 
+                                          of available space*/
+        margin: 5px;
+    }
+    #myheader {
+            -ms-grid-row: 1;
+            -ms-grid-column: 1;
+            -ms-grid-column-span: 5;
+            background-color: #EEB215;
+    }
+
+    #myheader h1 {
+        font-size:1.5em;
+    }
+    #block1 {
+            -ms-grid-row: 2;
+            -ms-grid-column: 1;
+            -ms-grid-column-span: 5;
+            background-color: #B2B0B0;
+    }
+    #block2 {
+       -ms-grid-row: 3;
+       -ms-grid-column: 1;
+       -ms-grid-column-span: 3;
+       background-color: #726E6E;
+    }
+    #block2Items {
+            -ms-grid-row: 3;
+            -ms-grid-column: 4;
+            background-color: #FFFFFF;
+    }
+
+    #block3 {
+       -ms-grid-row: 4; 
+       -ms-grid-column: 1;
+       -ms-grid-column-span: 3;
+       background-color: #515050;
+    }
+}
+
+@media only screen and (min-width: 1220px) {
+    #mygrid {
+        display: -ms-grid;
+        -ms-grid-columns: 10px 7fr 10px 2fr 10px 1fr;
+        -ms-grid-rows: 100px 4fr 10px 1fr;
+        margin: 0px;
+    }
+    #myheader {
+            -ms-grid-row: 1;
+            -ms-grid-column: 1;
+            -ms-grid-column-span: 6;
+            background-color: yellowgreen;
+    }
+
+    #block1 {
+            -ms-grid-row: 2;
+            -ms-grid-column: 1;
+            -ms-grid-row-span: 3;
+            -ms-grid-column-span: 3;
+            background-color: #B2B0B0;
+    }
+    #block2 {
+            -ms-grid-row: 2;
+            -ms-grid-column: 4;
+            -ms-grid-column-span:2;
+            background-color: #726E6E;
+            }
+    #block2Items {
+            -ms-grid-row: 2;
+            -ms-grid-column: 6;
+            background-color: #726E6E;
+            }
+    #block3 {
+            -ms-grid-row: 4;
+            -ms-grid-column: 4;
+            -ms-grid-column-span: 3;
+            background-color: #515050;
+    }
+}
+
+.closetBox {
+	display:inline;
+	width:75px;
+    float:left; 
+    margin: 0px 0px 0px 0px;
+}
+
+
+.topBox {
+	display:block;
+	height:80px;
+	width:80px;
+    margin:0px 10px 10px 10px;
+}
+
+
+.closetBoxFigure {
+    float:left; 
+	 width:50px;
+    margin:0px 0px 0px 0px;
+}
+
+.closetBoxFigCaption {
+	 width:50px;
+	 margin-right:auto;margin-left:auto;
+	 font-family:Arial, Helvetica, sans-serif;
+	 font-size:8px;
+	 
+
+}
+
+.boxCanvas {
+	
+	margin:0px 0px 0px 0px;
+	background:yellow;
+}
+
+

@@ -1,0 +1,38 @@
+﻿
+.closetBox {
+	display:inline;
+	width:75px;
+    float:left; 
+    margin: 60, 0, 20, 0;
+}
+
+
+.topBox {
+	display:block;
+	height:150px;
+	width:200px;
+    margin: 20,20,20,20;
+}
+
+
+.closetBoxFigure {
+	display:inline;
+    float:left; 
+	 width:50px;
+    margin:0, 0, 0, 0;
+}
+
+.closetBoxFigCaption {
+	 width:50px;
+	 margin-right:auto;margin-left:auto;
+	 font-family:Arial, Helvetica, sans-serif;
+	 font-size:8px;
+	 
+
+}
+
+.boxCanvas {
+	
+	margin:0, 0, 0, 0;
+	background:yellow;
+}
