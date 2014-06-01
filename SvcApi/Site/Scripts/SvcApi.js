@@ -2,7 +2,30 @@
 
 SM_JSON = {
     CATAGORIES: {},
+    IPAddress: "",
+    encode_utf8 : function(s){
+        return unescape(encodeURIComponent(s)); 
+        }, 
+    decode_utf8 : function(s) {
+        return decodeURIComponent(escape(s)); 
+        },
 
+    searchHandler: function() {
+        console.log("search...");
+        var srchText = $("#BXSearch").val();
+        console.log(SM_JSON.GenSearchURL(srchText));
+        $.ajax({
+            url: SM_JSON.GenSearchURL(srchText),
+            crossDomain: true,
+            type: 'get',
+            dataType: 'json',
+        }).done(function (data) {
+            console.log("search done");
+            SM_JSON.InjectSearchItems(data);
+        }).error(function (foo) {
+            console.log(foo);
+        });
+    },
 
     GetApiKeyTrackId: function () {
         return SM_SVCS.EBAY_CAT_SVC.url
@@ -13,6 +36,34 @@ SM_JSON = {
         return SM_JSON.GetApiKeyTrackId()
            + "&categoryId=" + categoryId
            + (categoryId !== 0 ? "" : "&showAllDescendants=true");
+    },
+    GetIPAddress: function () {
+        $.getJSON("http://jsonip.appspot.com?callback=?",
+            function (data) {
+                SM_JSON.IPAddress=data.ip;
+            });       
+    },
+    CatSearchURL: function (categoryId) {
+        var userAgent = navigator.userAgent;
+        var IPAddress = SM_JSON.IPAddress;
+        return SM_SVCS.EBAY_SRCH_CAT.url
+            + "visitorUserAgent=" + encodeURIComponent(userAgent)
+            + "&visitorIPAddress=" + encodeURIComponent(IPAddress)
+            + "&apiKey=" + SM_KEYS.EBAY.apiKey
+            + "&trackingId=" + SM_KEYS.EBAY.trackingId
+            + "&categoryId=" + categoryId
+            + "&numItems=25";
+    },
+    GenSearchURL: function (searchphrase) {
+        var userAgent = navigator.userAgent;
+        var IPAddress = SM_JSON.IPAddress;
+        return SM_SVCS.EBAY_SRCH_CAT.url
+            + "visitorUserAgent=" + encodeURIComponent(userAgent)
+            + "&visitorIPAddress=" + encodeURIComponent(IPAddress)
+            + "&apiKey=" + SM_KEYS.EBAY.apiKey
+            + "&trackingId=" + SM_KEYS.EBAY.trackingId
+            + "&keyword=" + encodeURIComponent(searchphrase)
+            + "&numItems=25";
     },
 
     BuildCategories: function () {
@@ -73,11 +124,35 @@ SM_JSON = {
             });
             $el.show();
         }
+    },
+    InjectSearchItems: function (data) {
+        var newItems = [];
+        $(data.categories.category[0].items.item).each(function (index) {
+            newItems.push([this.product]);
+            });
+        var $el = $("#itemsCntrlRgn");
+        $el.empty(); // remove old options
+        if (newItems.length !== 0) {
+            $.each(newItems, function (key, value) {
+                if (this[0] !== undefined)
+                {
+                    $el.append($("<p></p>").text(this[0].id + "|")
+                        .attr("style", "display:inline"));
+                    console.log(this);
+
+                }
+            });
+            $el.show();
+        }
+
+        // kill any earlier search items.
+        // build an ItemCarrier for every Item returned in JSON data.   Make it draggable.
     }
 
 }
 
 $(function () {
+    SM_JSON.GetIPAddress();
     $("#CBCategorySelect").change(SM_JSON.BuildSubCategories);
     SM_JSON.BuildCategories(0);
 });

@@ -6,6 +6,9 @@ var SM_URLS = {
     EBAY: { url: "http://sandbox.api.shopping.com" }
 };
 
+
 var SM_SVCS = {
-    EBAY_CAT_SVC: { url: SM_URLS.EBAY.url + "/publisher/3.0/json/CategoryTree?" }
+    EBAY_CAT_SVC: { url: SM_URLS.EBAY.url + "/publisher/3.0/json/CategoryTree?" },
+    EBAY_SRCH_CAT: { url: SM_URLS.EBAY.url + "/publisher/3.0/json/GeneralSearch?" },
+    EBAY_SRCH_KEY: { url: SM_URLS.EBAY.url + "/publisher/3.0/json/CategoryTree?" }
 };

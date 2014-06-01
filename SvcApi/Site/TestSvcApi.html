@@ -29,11 +29,14 @@
                     class="optional overall classes"
                     data-btn-class="option toggle classes">
                 <!-- ... -->
-            </select>            <div id="itemsCntrlRgn">
-                <p>Hello</p>
-                <p>Hello</p>
-                <p>Hello</p>
-                <p>Hello</p>
+            </select>
+            <span>Search:</span>
+            <form id="searchForm" style="display:inline">
+                <input type="search" id="BXSearch" width="100"
+                       onkeydown="if (event.keyCode == 13) { SM_JSON.searchHandler();  return false; }"
+                       />
+            </form>
+            <div id="itemsCntrlRgn">
             </div>
         </div>
         <div id="block2">
