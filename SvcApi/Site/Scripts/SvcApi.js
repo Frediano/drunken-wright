@@ -125,6 +125,19 @@ SM_JSON = {
             $el.show();
         }
     },
+    pullAppropriateImageURL: function (data, wd, ht) {bestURL
+        var bestURL;
+        $(data.images.image).each(function (index) {
+            if(this.available)
+            {
+                var w = parseInt(this.width, 10);
+                var h = parseInt(this.height, 10);
+                if(w <= wd && h <= ht)
+                    bestURL=this.sourceURL;
+            }
+        });
+        return bestURL;
+        },
     InjectSearchItems: function (data) {
         var newItems = [];
         $(data.categories.category[0].items.item).each(function (index) {
@@ -136,13 +149,19 @@ SM_JSON = {
             $.each(newItems, function (key, value) {
                 if (this[0] !== undefined)
                 {
-                    $el.append($("<p></p>").text(this[0].id + "|")
-                        .attr("style", "display:inline"));
-                    console.log(this);
+                    var imgURL = SM_JSON.pullAppropriateImageURL(this[0],200,200);
+                    $el.append($("<img></img>")
+                        .attr("src", imgURL)
+                        .attr("width",150)
+                        .attr("height", 150)
+                        .attr("class","shopItem")
+                        .text("image not available"));
+                    console.log(imgURL);
 
                 }
             });
             $el.show();
+            $(".shopItem").draggable();
         }
 
         // kill any earlier search items.
