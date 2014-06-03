@@ -26,7 +26,26 @@ SM_JSON = {
             console.log(foo);
         });
     },
+    CatSearchHandler: function(categoryId) {
+        console.log("catSearch...");
+        $.ajax({
+            url: SM_JSON.CatItemSearchURL(categoryId),
+            crossDomain: true,
+            type: 'get',
+            dataType: 'json',
+        }).done(function (data) {
+            console.log("catSearchDone");
+            SM_JSON.InjectSearchItems(data);
+        }).error(function (foo) {
+            console.log(foo);
+        });
 
+    },
+    SubCatQueryHandler: function() {
+        var theCategory = $('#CBSubCategorySelect option:selected').text();
+        var theCategoryCode = $('#CBSubCategorySelect option:selected').val();
+        SM_JSON.CatSearchHandler(theCategoryCode);
+    },
     GetApiKeyTrackId: function () {
         return SM_SVCS.EBAY_CAT_SVC.url
             + "apiKey=" + SM_KEYS.EBAY.apiKey
@@ -63,6 +82,17 @@ SM_JSON = {
             + "&apiKey=" + SM_KEYS.EBAY.apiKey
             + "&trackingId=" + SM_KEYS.EBAY.trackingId
             + "&keyword=" + encodeURIComponent(searchphrase)
+            + "&numItems=25";
+    },
+    CatItemSearchURL: function (category) {
+        var userAgent = navigator.userAgent;
+        var IPAddress = SM_JSON.IPAddress;
+        return SM_SVCS.EBAY_SRCH_CAT.url
+            + "visitorUserAgent=" + encodeURIComponent(userAgent)
+            + "&visitorIPAddress=" + encodeURIComponent(IPAddress)
+            + "&apiKey=" + SM_KEYS.EBAY.apiKey
+            + "&trackingId=" + SM_KEYS.EBAY.trackingId
+            + "&categoryId=" + category
             + "&numItems=25";
     },
 
@@ -104,7 +134,7 @@ SM_JSON = {
         var bufdata = SM_JSON.CATAGORIES; // buffered is a list of subcategories, too... changes infrequently don't need refresh
         var newOptions = [];
         $(bufdata.category.categories.category).each(function (index) {
-            if(this.name === theCategory){
+            if (this.name === theCategory) {
                 if (this.categories !== undefined) {
                     $(this.categories.category).each(function (index2) {
                         newOptions.push([this.name, this.id]);
@@ -112,10 +142,11 @@ SM_JSON = {
                 }
             }
         });
-        var $el = $("#CBSubCatagorySelect");
+        var $el = $("#CBSubCategorySelect");
         $el.empty(); // remove old options
         if (newOptions.length === 0) {
             $el.hide();
+            SM_JSON.CatSearchHandler(theCategoryCode);
         }
         else {
             $.each(newOptions, function (key, value) {
@@ -123,25 +154,40 @@ SM_JSON = {
                    .attr("value", this[1]).text(this[0]));
             });
             $el.show();
+            SM_JSON.SubCatQueryHandler();
         }
     },
-    pullAppropriateImageURL: function (data, wd, ht) {bestURL
+    pullAppropriateImageURL: function (data, wd, ht) {
         var bestURL;
-        $(data.images.image).each(function (index) {
-            if(this.available)
-            {
-                var w = parseInt(this.width, 10);
-                var h = parseInt(this.height, 10);
-                if(w <= wd && h <= ht)
-                    bestURL=this.sourceURL;
-            }
-        });
+        if (data.images !== undefined)
+        {
+            $(data.images.image).each(function (index) {
+                if (this.available) {
+                    var w = parseInt(this.width, 10);
+                    var h = parseInt(this.height, 10);
+                    if (w <= wd && h <= ht)
+                        bestURL = this.sourceURL;
+                }
+            });
+        }
+        if (bestURL !== undefined) return bestURL;
+        if(data.imageList!==undefined){
+            $(data.imageList.image).each(function (index) {
+                if (this.available) {
+                    var w = parseInt(this.width, 10);
+                    var h = parseInt(this.height, 10);
+                    if (w <= wd && h <= ht)
+                        bestURL = this.sourceURL;
+                }
+            });
+        }
         return bestURL;
         },
     InjectSearchItems: function (data) {
         var newItems = [];
         $(data.categories.category[0].items.item).each(function (index) {
-            newItems.push([this.product]);
+            if (this.product != undefined) newItems.push([this.product]);
+            else if (this.offer != undefined) newItems.push(this.offer);
             });
         var $el = $("#itemsCntrlRgn");
         $el.empty(); // remove old options
@@ -159,6 +205,19 @@ SM_JSON = {
                     console.log(imgURL);
 
                 }
+                else if(this != undefined)
+                {
+                    var imgURL = SM_JSON.pullAppropriateImageURL(this,200,200);
+                    $el.append($("<img></img>")
+                        .attr("src", imgURL)
+                        .attr("width",150)
+                        .attr("height", 150)
+                        .attr("class","shopItem")
+                        .text("image not available"));
+                    console.log(imgURL);
+
+                }
+                
             });
             $el.show();
             $(".shopItem").draggable();
@@ -173,5 +232,6 @@ SM_JSON = {
 $(function () {
     SM_JSON.GetIPAddress();
     $("#CBCategorySelect").change(SM_JSON.BuildSubCategories);
+    $("#CBSubCategorySelect").change(SM_JSON.SubCatQueryHandler);
     SM_JSON.BuildCategories(0);
 });
