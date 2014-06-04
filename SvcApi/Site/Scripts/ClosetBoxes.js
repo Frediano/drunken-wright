@@ -74,7 +74,8 @@ $(function(){
     $( ".closetBox" ).droppable({
       drop: function( event, ui ) {
         
-        alert(ui.helper[0].id + ' dropped onto ' + this.id );
+          alert(ui.helper[0].id + ' dropped onto ' + this.id);
+          $(ui.draggable[0]).remove();
         }
      });
      

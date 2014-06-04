@@ -114,13 +114,17 @@
             -ms-grid-column-span: 3;
             background-color: #515050;
     }
+    .itemCarrier{
+        width:150px;
+        height:200px;
+    }
 }
 
 .closetBox {
 	display:inline;
-	width:75px;
+	width:60px;
     float:left; 
-    margin: 0px 0px 0px 0px;
+    margin: 2px 6px 2px 20px;
 }
 
 
@@ -153,4 +157,17 @@
 	background:yellow;
 }
 
+.itemDiv {
+    display:inline;
+    width:150px;
+    height:200px;
+    float:left;
+}
 
+itemImg{
+    display:inline;
+}
+
+.itemPrice {
+   display:inline;
+}

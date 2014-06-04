@@ -2,17 +2,55 @@
 
 SM_JSON = {
     CATAGORIES: {},
+    PuntFlag: 0,
     IPAddress: "",
-    encode_utf8 : function(s){
-        return unescape(encodeURIComponent(s)); 
-        }, 
-    decode_utf8 : function(s) {
-        return decodeURIComponent(escape(s)); 
+    setCookie: function (cname, cat, subcat, srch, exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires="+d.toGMTString();
+        document.cookie = "ID=" + cname + "|CAT=" + cat + "||SUBCAT=" + subcat + "|SRCH=" + srch + "|" + expires;
         },
 
+    getCookie: function(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split('|');
+        for(var i=0; i<ca.length; i++) {
+            var c = ca[i].trim();
+            if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+            }
+            return "";
+    },
+    saveGuiState: function() {
+        var srchText = $("#BXSearch").val();
+        var theCategoryCode = $('#CBCategorySelect').val();
+        var theSubCategoryCode = $('#CBSubCategorySelect option:selected').val();
+        SM_JSON.setCookie("TESTUSER",theCategoryCode,theSubCategoryCode,srchText,10);
+    },
+    getGuiState: function() {
+        var srchText = SM_JSON.getCookie("SRCH");
+        var theCategoryCode = SM_JSON.getCookie("CAT");
+        var theSubCategoryCode = SM_JSON.getCookie("SUBCAT");
+        if (theCategoryCode === undefined) return;
+        SM_JSON.PuntFlag=1;
+        $('#CBCategorySelect').val(theCategoryCode);
+        if(srchText.length===0)
+        {
+            $("#BXSearch").val("");
+            SM_JSON.PuntFlag=0;
+        }
+        $('#CBSubCategorySelect').val(theSubCategoryCode);
+        if(srchText.length!==0)
+        {
+            SM_JSON.PuntFlag=0;
+            $("#BXSearch").val(srchText);
+        }
+        SM_JSON.PuntFlag=0;
+    },
     searchHandler: function() {
+        if(SM_JSON.PuntFlag==1)return;
         console.log("search...");
         var srchText = $("#BXSearch").val();
+        if (srchText.length === 0) return;
         console.log(SM_JSON.GenSearchURL(srchText));
         $.ajax({
             url: SM_JSON.GenSearchURL(srchText),
@@ -25,8 +63,11 @@ SM_JSON = {
         }).error(function (foo) {
             console.log(foo);
         });
+        SM_JSON.saveGuiState();
     },
     CatSearchHandler: function(categoryId) {
+        if(SM_JSON.PuntFlag==1)return;
+        $("#BXSearch").val("");
         console.log("catSearch...");
         $.ajax({
             url: SM_JSON.CatItemSearchURL(categoryId),
@@ -39,9 +80,11 @@ SM_JSON = {
         }).error(function (foo) {
             console.log(foo);
         });
-
+        SM_JSON.saveGuiState();
     },
     SubCatQueryHandler: function() {
+        if(SM_JSON.PuntFlag==1)return;
+        $("#BXSearch").val("");
         var theCategory = $('#CBSubCategorySelect option:selected').text();
         var theCategoryCode = $('#CBSubCategorySelect option:selected').val();
         SM_JSON.CatSearchHandler(theCategoryCode);
@@ -195,33 +238,104 @@ SM_JSON = {
             $.each(newItems, function (key, value) {
                 if (this[0] !== undefined)
                 {
-                    var imgURL = SM_JSON.pullAppropriateImageURL(this[0],200,200);
-                    $el.append($("<img></img>")
-                        .attr("src", imgURL)
-                        .attr("width",150)
-                        .attr("height", 150)
-                        .attr("class","shopItem")
-                        .text("image not available"));
-                    console.log(imgURL);
+                    var imgURL = SM_JSON.pullAppropriateImageURL(this[0], 200, 200);
+                    var $thisDiv =$('<div></div>')
+                            .attr('class', 'itemDiv')
+                            .attr('title', this[0].name)
+                            .attr('id', this[0].id);
+
+                    var itemLnk = "";
+                    if (this[0].offerURL !== undefined) itemLnk = this[0].offerURL;
+                    if (this[0].productOffersURL !== undefined) itemLnk = this[0].productOffersURL;
+                    var $thisA = $('<a></a>')
+                                .attr('href', itemLnk);
+
+                    var $thisImg = $("<img></img>")
+                                    .attr("src", imgURL)
+                                    .attr("width", 150)
+                                    .attr("height", 150)
+                                    .attr("class", "shopItem")
+                                    .text("image not available");
+                   
+                    var bPrice = '???';
+                    if (this[0].basePrice !== undefined) bPrice = this[0].basePrice.value;
+                    else if (this[0].minPrice !== undefined) bPrice = this[0].minPrice.value;
+                    var $thisSpan = $('<span></span>')
+                                .attr('class', 'itemPrice')
+                                .text('from ' + bPrice);
+
+                    if ($thisA !== undefined) {
+                        $thisA.append($thisImg);
+                        $thisDiv.append($thisA);
+                        $thisDiv.append($thisSpan);
+
+                    }
+                    else {
+                        $thisDiv.append($thisImg);
+                        $thisDiv.append($thisSpan);
+                    }
+                    $el.append($thisDiv);
+                    $('.itemDiv').draggable();
 
                 }
                 else if(this != undefined)
                 {
-                    var imgURL = SM_JSON.pullAppropriateImageURL(this,200,200);
-                    $el.append($("<img></img>")
-                        .attr("src", imgURL)
-                        .attr("width",150)
-                        .attr("height", 150)
-                        .attr("class","shopItem")
-                        .text("image not available"));
-                    console.log(imgURL);
+                    var imgURL = SM_JSON.pullAppropriateImageURL(this, 200, 200);
+                    var $thisDiv =$('<div></div>')
+                            .attr('class', 'itemDiv')
+                            .attr('title', this.name)
+                            .attr('id', this.id);
 
+                    var itemLnk = "";
+                    if (this.offerURL !== undefined) itemLnk = this.offerURL;
+                    if (this.productOffersURL !== undefined) itemLnk = this.productOffersURL;
+                    var $thisA = $('<a></a>')
+                                .attr('href', itemLnk);
+
+                    var $thisImg = $("<img></img>")
+                                    .attr("src", imgURL)
+                                    .attr("width", 150)
+                                    .attr("height", 150)
+                                    .attr("class", "shopItem")
+                                    .text("image not available");
+                   
+                    var bPrice = '???';
+                    if (this.basePrice !== undefined) bPrice = this.basePrice.value;
+                    else if (this.minPrice !== undefined) bPrice = this.minPrice.value;
+                    var $thisSpan = $('<span></span>')
+                                .attr('class', 'itemPrice')
+                                .text('from ' + bPrice);
+                    if ($thisA !== undefined)
+                    {
+                        $thisA.append($thisImg);
+                        $thisDiv.append($thisA);
+                        $thisDiv.append($thisSpan);
+
+                    }
+                    else
+                    {
+                        $thisDiv.append($thisImg);
+                        $thisDiv.append($thisSpan);
+                    }
+                    $el.append($thisDiv);
+
+                    $('.itemDiv').draggable();
                 }
                 
             });
             $el.show();
-            $(".shopItem").draggable();
+            //$(".shopItem").draggable();
         }
+
+        /*
+        <div class="itemDiv" id="akjdhfaksjhf" title="This should be a tool tip" >
+            <a href="TestSvcApi.html">
+                <img src="img/mustang.jpg" width="150" height="150" class="itemImg" />
+            </a>
+            <p class="itemPrice">$699.99</p>
+        </div>
+        */
+
 
         // kill any earlier search items.
         // build an ItemCarrier for every Item returned in JSON data.   Make it draggable.
@@ -234,4 +348,5 @@ $(function () {
     $("#CBCategorySelect").change(SM_JSON.BuildSubCategories);
     $("#CBSubCategorySelect").change(SM_JSON.SubCatQueryHandler);
     SM_JSON.BuildCategories(0);
+    SM_JSON.getGuiState();
 });
