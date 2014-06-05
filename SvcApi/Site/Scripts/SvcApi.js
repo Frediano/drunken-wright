@@ -114,7 +114,7 @@ SM_JSON = {
             + "&apiKey=" + SM_KEYS.EBAY.apiKey
             + "&trackingId=" + SM_KEYS.EBAY.trackingId
             + "&categoryId=" + categoryId
-            + "&numItems=25";
+            + "&numItems=50";
     },
     GenSearchURL: function (searchphrase) {
         var userAgent = navigator.userAgent;
@@ -125,7 +125,7 @@ SM_JSON = {
             + "&apiKey=" + SM_KEYS.EBAY.apiKey
             + "&trackingId=" + SM_KEYS.EBAY.trackingId
             + "&keyword=" + encodeURIComponent(searchphrase)
-            + "&numItems=25";
+            + "&numItems=50";
     },
     CatItemSearchURL: function (category) {
         var userAgent = navigator.userAgent;
@@ -136,7 +136,7 @@ SM_JSON = {
             + "&apiKey=" + SM_KEYS.EBAY.apiKey
             + "&trackingId=" + SM_KEYS.EBAY.trackingId
             + "&categoryId=" + category
-            + "&numItems=25";
+            + "&numItems=50";
     },
 
     BuildCategories: function () {

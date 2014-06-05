@@ -162,6 +162,7 @@
     width:150px;
     height:200px;
     float:left;
+    background-color:lightsteelblue;
 }
 
 itemImg{
@@ -170,4 +171,7 @@ itemImg{
 
 .itemPrice {
    display:inline;
+   font-family:Arial,sans-serif;
+   font-weight:bold;
+   color:midnightblue;
 }
