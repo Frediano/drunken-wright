@@ -4,16 +4,23 @@ SM_JSON = {
     CATAGORIES: {},
     PuntFlag: 0,
     IPAddress: "",
+    InitCat: undefined,
+    InitSubCat: undefined,
+    InitSrch:undefined,
     setCookie: function (cname, cat, subcat, srch, exdays) {
         var d = new Date();
         d.setTime(d.getTime() + (exdays*24*60*60*1000));
         var expires = "expires="+d.toGMTString();
-        document.cookie = "ID=" + cname + "|CAT=" + cat + "||SUBCAT=" + subcat + "|SRCH=" + srch + "|" + expires;
+        document.cookie = "ID=" + cname + ";";
+        document.cookie = "CAT=" + cat + ";";
+        document.cookie = "SUBCAT=" + subcat + ";";
+        document.cookie = "SRCH=" + srch + ";";
+        document.cookie = expires;
         },
 
     getCookie: function(cname) {
         var name = cname + "=";
-        var ca = document.cookie.split('|');
+        var ca = document.cookie.split(';');
         for(var i=0; i<ca.length; i++) {
             var c = ca[i].trim();
             if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
@@ -31,23 +38,18 @@ SM_JSON = {
         var theCategoryCode = SM_JSON.getCookie("CAT");
         var theSubCategoryCode = SM_JSON.getCookie("SUBCAT");
         if (theCategoryCode === undefined) return;
-        SM_JSON.PuntFlag=1;
-        $('#CBCategorySelect').val(theCategoryCode);
-        if(srchText.length===0)
-        {
-            $("#BXSearch").val("");
-            SM_JSON.PuntFlag=0;
-        }
-        $('#CBSubCategorySelect').val(theSubCategoryCode);
-        if(srchText.length!==0)
+        SM_JSON.InitCat = theCategoryCode;
+        SM_JSON.InitSubCat = theSubCategoryCode;
+        SM_JSON.InitSrch = srchText;
+        if (SM_JSON.InitSrch.length !== 0)
         {
             SM_JSON.PuntFlag=0;
-            $("#BXSearch").val(srchText);
+            $("#BXSearch").val(SM_JSON.InitSrch);
         }
         SM_JSON.PuntFlag=0;
     },
     searchHandler: function() {
-        if(SM_JSON.PuntFlag==1)return;
+        if(SM_JSON.PuntFlag===1)return;
         console.log("search...");
         var srchText = $("#BXSearch").val();
         if (srchText.length === 0) return;
@@ -66,7 +68,7 @@ SM_JSON = {
         SM_JSON.saveGuiState();
     },
     CatSearchHandler: function(categoryId) {
-        if(SM_JSON.PuntFlag==1)return;
+        if(SM_JSON.PuntFlag===1)return;
         $("#BXSearch").val("");
         console.log("catSearch...");
         $.ajax({
@@ -83,7 +85,6 @@ SM_JSON = {
         SM_JSON.saveGuiState();
     },
     SubCatQueryHandler: function() {
-        if(SM_JSON.PuntFlag==1)return;
         $("#BXSearch").val("");
         var theCategory = $('#CBSubCategorySelect option:selected').text();
         var theCategoryCode = $('#CBSubCategorySelect option:selected').val();
@@ -159,7 +160,10 @@ SM_JSON = {
                 $el.append($("<option></option>")
                    .attr("value", this[1]).text(this[0]));
             });
-            // select first item
+            if (SM_JSON.InitCat !== undefined) {
+                $('#CBCategorySelect').val(SM_JSON.InitCat);
+                SM_JSON.InitCat = undefined;
+            }
             SM_JSON.BuildSubCategories();
 
 
@@ -197,6 +201,11 @@ SM_JSON = {
                    .attr("value", this[1]).text(this[0]));
             });
             $el.show();
+            if (SM_JSON.InitSubCat !== undefined)
+            {
+                $('#CBSubCategorySelect').val(SM_JSON.InitSubCat);
+                SM_JSON.InitSubCat=undefined;
+            }
             SM_JSON.SubCatQueryHandler();
         }
     },
@@ -345,8 +354,8 @@ SM_JSON = {
 
 $(function () {
     SM_JSON.GetIPAddress();
+    SM_JSON.getGuiState();
     $("#CBCategorySelect").change(SM_JSON.BuildSubCategories);
     $("#CBSubCategorySelect").change(SM_JSON.SubCatQueryHandler);
     SM_JSON.BuildCategories(0);
-    SM_JSON.getGuiState();
 });
