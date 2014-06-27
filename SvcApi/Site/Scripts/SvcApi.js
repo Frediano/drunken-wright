@@ -41,11 +41,6 @@ SM_JSON = {
         SM_JSON.InitCat = theCategoryCode;
         SM_JSON.InitSubCat = theSubCategoryCode;
         SM_JSON.InitSrch = srchText;
-        if (SM_JSON.InitSrch.length !== 0)
-        {
-            SM_JSON.PuntFlag=0;
-            $("#BXSearch").val(SM_JSON.InitSrch);
-        }
         SM_JSON.PuntFlag=0;
     },
     searchHandler: function() {
@@ -206,7 +201,13 @@ SM_JSON = {
                 $('#CBSubCategorySelect').val(SM_JSON.InitSubCat);
                 SM_JSON.InitSubCat=undefined;
             }
-            SM_JSON.SubCatQueryHandler();
+            if (SM_JSON.InitSrch !== undefined && SM_JSON.InitSrch.length !== 0) {
+                $("#BXSearch").val(SM_JSON.InitSrch);
+                SM_JSON.InitSrch = undefined;
+                SM_JSON.searchHandler();
+            }
+           else
+                SM_JSON.SubCatQueryHandler();
         }
     },
     pullAppropriateImageURL: function (data, wd, ht) {
